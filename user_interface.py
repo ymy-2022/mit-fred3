@@ -59,8 +59,8 @@ class UserInterface():
                               "Please calibrate the camera.")
             self.fiber_camera.diameter_coefficient = 0.00782324
         self.layout.addWidget(self.fiber_camera.raw_image, 2, 8, 6, 1)
-        self.layout.addWidget(self.fiber_camera.canny_image, 9, 8, 6, 1)
-        self.layout.addWidget(self.fiber_camera.processed_image, 16, 8, 6, 1)
+        # self.layout.addWidget(self.fiber_camera.canny_image, 9, 8, 6, 1)
+        self.layout.addWidget(self.fiber_camera.processed_image, 9, 8, 6, 1)
 
         self.add_buttons()
         

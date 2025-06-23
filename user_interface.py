@@ -1,5 +1,5 @@
 from typing import Tuple
-from PyQt5.QtWidgets import QApplication, QWidget, QGridLayout, QLabel, QDoubleSpinBox, QSlider, QPushButton, QMessageBox, QLineEdit, QCheckBox 
+from PyQt5.QtWidgets import QApplication, QWidget, QGridLayout, QLabel, QDoubleSpinBox, QSlider, QPushButton, QMessageBox, QLineEdit, QCheckBox, QVBoxLayout, QHBoxLayout
 from PyQt5.QtCore import QTimer, Qt
 from PyQt5.QtGui import QPixmap, QImage
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -78,7 +78,7 @@ class UserInterface():
         self.binary_checkbox.stateChanged.connect(self.toggle_binary_filter)
         self.layout.addWidget(self.binary_checkbox, filter_row_start + 3, filter_col, 1, 2)
 
-        # 滑块
+        # --- Canny Lower/Upper合并到一列 ---
         self.canny_lower_slider = QSlider(Qt.Horizontal)
         self.canny_lower_slider.setRange(0, 150)
         self.canny_lower_slider.setSingleStep(5)
@@ -86,9 +86,6 @@ class UserInterface():
         self.canny_lower_slider.setValue(100)
         self.canny_lower_slider.valueChanged.connect(self.update_canny_lower)
         self.canny_lower_value_label = QLabel(str(self.canny_lower_slider.value()))
-        self.layout.addWidget(QLabel("Canny Lower"), filter_row_start + 4, filter_col, 1, 1)
-        self.layout.addWidget(self.canny_lower_slider, filter_row_start + 4, filter_col + 1, 1, 2)
-        self.layout.addWidget(self.canny_lower_value_label, filter_row_start + 4, filter_col + 3)
 
         self.canny_upper_slider = QSlider(Qt.Horizontal)
         self.canny_upper_slider.setRange(150, 300)
@@ -97,10 +94,29 @@ class UserInterface():
         self.canny_upper_slider.setValue(250)
         self.canny_upper_slider.valueChanged.connect(self.update_canny_upper)
         self.canny_upper_value_label = QLabel(str(self.canny_upper_slider.value()))
-        self.layout.addWidget(QLabel("Canny Upper"), filter_row_start + 5, filter_col, 1, 1)
-        self.layout.addWidget(self.canny_upper_slider, filter_row_start + 5, filter_col + 1, 1, 2)
-        self.layout.addWidget(self.canny_upper_value_label, filter_row_start + 5, filter_col + 3)
 
+        canny_widget = QWidget()
+        canny_vbox = QVBoxLayout()
+        # Canny Lower
+        canny_lower_row = QWidget()
+        canny_lower_layout = QHBoxLayout()
+        canny_lower_layout.addWidget(QLabel("Canny Lower"))
+        canny_lower_layout.addWidget(self.canny_lower_slider)
+        canny_lower_layout.addWidget(self.canny_lower_value_label)
+        canny_lower_row.setLayout(canny_lower_layout)
+        canny_vbox.addWidget(canny_lower_row)
+        # Canny Upper
+        canny_upper_row = QWidget()
+        canny_upper_layout = QHBoxLayout()
+        canny_upper_layout.addWidget(QLabel("Canny Upper"))
+        canny_upper_layout.addWidget(self.canny_upper_slider)
+        canny_upper_layout.addWidget(self.canny_upper_value_label)
+        canny_upper_row.setLayout(canny_upper_layout)
+        canny_vbox.addWidget(canny_upper_row)
+        canny_widget.setLayout(canny_vbox)
+        self.layout.addWidget(canny_widget, filter_row_start + 4, filter_col, 2, 2)
+
+        # Hough Threshold
         self.hough_threshold_slider = QSlider(Qt.Horizontal)
         self.hough_threshold_slider.setRange(10, 100)
         self.hough_threshold_slider.setSingleStep(5)

@@ -139,7 +139,7 @@ class UserInterface():
         # --- 文件名输入框 ---
         self.csv_filename = QLineEdit()
         self.csv_filename.setText("Enter a file name")
-        self.layout.addWidget(self.csv_filename, filter_row_start + 8, filter_col, 1, 4)
+        self.layout.addWidget(self.csv_filename, filter_row_start + 9, filter_col, 1, 4)
 
         self.add_buttons()
 

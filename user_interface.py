@@ -78,7 +78,7 @@ class UserInterface():
         self.binary_checkbox.stateChanged.connect(self.toggle_binary_filter)
         self.layout.addWidget(self.binary_checkbox, filter_row_start + 3, filter_col, 1, 2)
 
-        # --- Canny Lower/Upper合并到一列 ---
+        # --- Canny Lower/Upper/Hough Threshold合并到一列 ---
         self.canny_lower_slider = QSlider(Qt.Horizontal)
         self.canny_lower_slider.setRange(0, 150)
         self.canny_lower_slider.setSingleStep(5)
@@ -95,28 +95,6 @@ class UserInterface():
         self.canny_upper_slider.valueChanged.connect(self.update_canny_upper)
         self.canny_upper_value_label = QLabel(str(self.canny_upper_slider.value()))
 
-        canny_widget = QWidget()
-        canny_vbox = QVBoxLayout()
-        # Canny Lower
-        canny_lower_row = QWidget()
-        canny_lower_layout = QHBoxLayout()
-        canny_lower_layout.addWidget(QLabel("Canny Lower"))
-        canny_lower_layout.addWidget(self.canny_lower_slider)
-        canny_lower_layout.addWidget(self.canny_lower_value_label)
-        canny_lower_row.setLayout(canny_lower_layout)
-        canny_vbox.addWidget(canny_lower_row)
-        # Canny Upper
-        canny_upper_row = QWidget()
-        canny_upper_layout = QHBoxLayout()
-        canny_upper_layout.addWidget(QLabel("Canny Upper"))
-        canny_upper_layout.addWidget(self.canny_upper_slider)
-        canny_upper_layout.addWidget(self.canny_upper_value_label)
-        canny_upper_row.setLayout(canny_upper_layout)
-        canny_vbox.addWidget(canny_upper_row)
-        canny_widget.setLayout(canny_vbox)
-        self.layout.addWidget(canny_widget, filter_row_start + 4, filter_col, 2, 2)
-
-        # Hough Threshold
         self.hough_threshold_slider = QSlider(Qt.Horizontal)
         self.hough_threshold_slider.setRange(10, 100)
         self.hough_threshold_slider.setSingleStep(5)
@@ -124,9 +102,39 @@ class UserInterface():
         self.hough_threshold_slider.setValue(30)
         self.hough_threshold_slider.valueChanged.connect(self.update_hough_threshold)
         self.hough_threshold_value_label = QLabel(str(self.hough_threshold_slider.value()))
-        self.layout.addWidget(QLabel("Hough Threshold"), filter_row_start + 6, filter_col, 1, 1)
-        self.layout.addWidget(self.hough_threshold_slider, filter_row_start + 6, filter_col + 1, 1, 2)
-        self.layout.addWidget(self.hough_threshold_value_label, filter_row_start + 6, filter_col + 3)
+
+        canny_hough_widget = QWidget()
+        canny_hough_vbox = QVBoxLayout()
+
+        # Canny Lower
+        canny_lower_row = QWidget()
+        canny_lower_layout = QHBoxLayout()
+        canny_lower_layout.addWidget(QLabel("Canny Lower"))
+        canny_lower_layout.addWidget(self.canny_lower_slider)
+        canny_lower_layout.addWidget(self.canny_lower_value_label)
+        canny_lower_row.setLayout(canny_lower_layout)
+        canny_hough_vbox.addWidget(canny_lower_row)
+
+        # Canny Upper
+        canny_upper_row = QWidget()
+        canny_upper_layout = QHBoxLayout()
+        canny_upper_layout.addWidget(QLabel("Canny Upper"))
+        canny_upper_layout.addWidget(self.canny_upper_slider)
+        canny_upper_layout.addWidget(self.canny_upper_value_label)
+        canny_upper_row.setLayout(canny_upper_layout)
+        canny_hough_vbox.addWidget(canny_upper_row)
+
+        # Hough Threshold
+        hough_row = QWidget()
+        hough_layout = QHBoxLayout()
+        hough_layout.addWidget(QLabel("Hough Threshold"))
+        hough_layout.addWidget(self.hough_threshold_slider)
+        hough_layout.addWidget(self.hough_threshold_value_label)
+        hough_row.setLayout(hough_layout)
+        canny_hough_vbox.addWidget(hough_row)
+
+        canny_hough_widget.setLayout(canny_hough_vbox)
+        self.layout.addWidget(canny_hough_widget, filter_row_start + 4, filter_col, 3, 2)
 
         # --- 文件名输入框 ---
         self.csv_filename = QLineEdit()

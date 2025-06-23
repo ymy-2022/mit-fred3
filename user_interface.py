@@ -8,7 +8,7 @@ from matplotlib.figure import Figure
 
 from database import Database
 from fiber_camera import FiberCamera
- 
+
 class UserInterface():
     """"Graphical User Interface Class"""
     def __init__(self) -> None:
@@ -16,54 +16,60 @@ class UserInterface():
         self.window = QWidget()
         self.layout = QGridLayout()
 
-        self.motor_plot, self.temperature_plot, self.diameter_plot \
-            = self.add_plots()
-
+        self.motor_plot, self.temperature_plot, self.diameter_plot = self.add_plots()
         self.target_diameter = self.add_diameter_controls()
-        
         self.extrusion_motor_speed = self.add_motor_controls()
-
         self.target_temperature_label, self.target_temperature, \
-            self.temperature_kp, self.temperature_ki, self.temperature_kd \
-            = self.add_temperature_controls()
-
+            self.temperature_kp, self.temperature_ki, self.temperature_kd = self.add_temperature_controls()
         self.fan_duty_cycle_label, self.fan_duty_cycle = self.add_fan_controls()
-        
-        self.heater_open_loop_pwm_label, self.heater_open_loop_pwm = self.add_heater_open_loop_pwm_control() #NEWW
-        
-        self.dc_motor_pwm_label, self.dc_motor_pwm = self.add_dc_motor_controls()#New
-        
-        self.motor_setpoint, self.motor_kp, self.motor_ki, self.motor_kd = self.add_motor_pid_controls() #NEW
+        self.heater_open_loop_pwm_label, self.heater_open_loop_pwm = self.add_heater_open_loop_pwm_control()
+        self.dc_motor_pwm_label, self.dc_motor_pwm = self.add_dc_motor_controls()
+        self.motor_setpoint, self.motor_kp, self.motor_ki, self.motor_kd = self.add_motor_pid_controls()
 
-        # Editable text box for the CSV file name
         self.csv_filename = QLineEdit()
         self.csv_filename.setText("Enter a file name")
         self.layout.addWidget(self.csv_filename, 24, 8)
 
-
         self.device_started = False
         self.start_motor_calibration = False
-        self.heater_open_loop_enabled = False #NEw
-        self.dc_motor_open_loop_enabled = False#New
-        self.camera_feedback_enabled = False #New
-        self.dc_motor_close_loop_enabled = False #NEW
+        self.heater_open_loop_enabled = False
+        self.dc_motor_open_loop_enabled = False
+        self.camera_feedback_enabled = False
+        self.dc_motor_close_loop_enabled = False
         self.break_level1_enabled = False
         self.break_level2_enabled = False
         self.break_level3_enabled = False
-        
-        self.fiber_camera = FiberCamera(self.target_diameter, self) #new check
 
-        #self.fiber_camera = FiberCamera(self.target_diameter)
+        self.fiber_camera = FiberCamera(self.target_diameter, self)
+
         if self.fiber_camera.diameter_coefficient == -1:
             self.show_message("Camera calibration data not found",
                               "Please calibrate the camera.")
             self.fiber_camera.diameter_coefficient = 0.00782324
+
+        # --- IMAGE TITLES AND IMAGE PLACEMENT ---
+        # Add "Raw Image" title above raw image
+        self.raw_image_title = QLabel("Raw Image")
+        self.raw_image_title.setStyleSheet("font-size: 16px; font-weight: bold;")
+        self.raw_image_title.setAlignment(Qt.AlignLeft | Qt.AlignTop)
+        self.layout.addWidget(self.raw_image_title, 1, 8)
+
+        # Add raw image
         self.layout.addWidget(self.fiber_camera.raw_image, 2, 8, 6, 1)
-        # self.layout.addWidget(self.fiber_camera.canny_image, 9, 8, 6, 1)
+
+        # Canny image is hidden and not added to layout
+
+        # Add "Process Image" title above processed image (where Canny image was)
+        self.processed_image_title = QLabel("Process Image")
+        self.processed_image_title.setStyleSheet("font-size: 16px; font-weight: bold;")
+        self.processed_image_title.setAlignment(Qt.AlignLeft | Qt.AlignTop)
+        self.layout.addWidget(self.processed_image_title, 8, 8)
+
+        # Move processed image to where canny image was (row 9, col 8, 6x1)
         self.layout.addWidget(self.fiber_camera.processed_image, 9, 8, 6, 1)
 
         self.add_buttons()
-        
+
         self.window.setLayout(self.layout)
         self.window.setWindowTitle("MIT FrED")
         self.window.setGeometry(100, 100, 1600, 1000)

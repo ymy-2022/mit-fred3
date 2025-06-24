@@ -29,6 +29,12 @@ class FiberCamera(QWidget):
         self.diameter_coefficient = Database.get_calibration_data("diameter_coefficient")
         self.previous_time = 0.0
 
+        # Live filter toggles (default: enabled)
+        self.erode_enabled = True
+        self.dilate_enabled = True
+        self.gaussian_enabled = True
+        self.binary_enabled = True
+
     def camera_loop(self) -> None:
         """Loop to capture and process frames from the camera"""
         current_time = time.time()
@@ -63,13 +69,19 @@ class FiberCamera(QWidget):
         self.processed_image.setPixmap(QPixmap(image_for_gui))
 
     def get_edges(self, frame: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
-        """Filter the frame to enhance the edges"""
+        """Filter the frame to enhance the edges, with live toggling of filters"""
         frame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
         kernel = np.ones((5, 5), np.uint8)
-        frame = cv2.erode(frame, kernel, iterations=2)
-        frame = cv2.dilate(frame, kernel, iterations=2)
-        gaussian_blurred = cv2.GaussianBlur(frame, (5, 5), 0)
-        _, binary_frame = cv2.threshold(gaussian_blurred, 100, 255, cv2.THRESH_BINARY)
+        if self.erode_enabled:
+            frame = cv2.erode(frame, kernel, iterations=2)
+        if self.dilate_enabled:
+            frame = cv2.dilate(frame, kernel, iterations=2)
+        if self.gaussian_enabled:
+            frame = cv2.GaussianBlur(frame, (5, 5), 0)
+        if self.binary_enabled:
+            _, binary_frame = cv2.threshold(frame, 100, 255, cv2.THRESH_BINARY)
+        else:
+            binary_frame = frame.copy()
 
         if FiberCamera.use_binary_for_edges:
             edges = cv2.Canny(binary_frame, 100, 250, apertureSize=3)

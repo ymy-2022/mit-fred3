@@ -88,7 +88,7 @@ class UserInterface():
         self.canny_lower_value_label = QLabel(str(self.canny_lower_slider.value()))
 
         self.canny_upper_slider = QSlider(Qt.Horizontal)
-        self.canny_upper_slider.setRange(150, 300)
+        self.canny_upper_slider.setRange(150, 500)
         self.canny_upper_slider.setSingleStep(5)
         self.canny_upper_slider.setTickInterval(5)
         self.canny_upper_slider.setValue(250)
@@ -96,7 +96,7 @@ class UserInterface():
         self.canny_upper_value_label = QLabel(str(self.canny_upper_slider.value()))
 
         self.hough_threshold_slider = QSlider(Qt.Horizontal)
-        self.hough_threshold_slider.setRange(10, 100)
+        self.hough_threshold_slider.setRange(5, 500)
         self.hough_threshold_slider.setSingleStep(5)
         self.hough_threshold_slider.setTickInterval(5)
         self.hough_threshold_slider.setValue(30)
